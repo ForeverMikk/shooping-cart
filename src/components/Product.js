@@ -7,6 +7,7 @@ import "./Product.css";
 const Product = ({ name, id, imgURL, price }) => {
 
   const dispatch = useDispatch();
+  
   const addToCart = () => {
     dispatch(cartActions.addToCart({
       name,
