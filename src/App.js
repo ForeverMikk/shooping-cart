@@ -7,7 +7,7 @@ import Auth from "./components/Auth";
 import Layout from "./components/Layout";
 import Notification from "./components/Notification";
 import { uiActions } from "./store/ui-slice";
-
+let isFirstRender = true;
 
 
 function App() {
@@ -36,19 +36,29 @@ function App() {
 
   // using axios
   useEffect(() => {
+
+    if(isFirstRender) {
+      isFirstRender = false;
+      return;
+    }
+
+
     // Send state as a request
     async function sendRequest(){
+      
+      dispatch(uiActions.showNotification({
+        open: true,
+        type: 'warning',
+        message: 'Sending Request'
+      }))
+      
       try {
-
-        dispatch(uiActions.showNotification({
-          open: true,
-          type: 'warning',
-          message: 'Sending Request'
-        }))
-
         const response = await axios.put('https://redux-http-38b3d-default-rtdb.firebaseio.com/cartItems.json',
           JSON.stringify(cart)
         )
+
+        const data = await response.data;
+        console.log("DATA", data)
 
         dispatch(uiActions.showNotification({
           open: true,
@@ -56,8 +66,6 @@ function App() {
           message: "Sent Request to database Successfully"
         }))
 
-        const data = response.JSON();
-        console.log("DATA", data)
       } catch(error) {
 
         dispatch(uiActions.showNotification({
@@ -66,7 +74,7 @@ function App() {
           message: "Sending Request Failed"
         }))
 
-        // console.log(error)
+        console.log(error)
       }
     }
 
@@ -77,7 +85,7 @@ function App() {
 
   return (
     <div className="App">
-      {notification && <Notification type={notification.type} message={notification.message} />}
+      { notification && <Notification type={notification.type} message={notification.message} />}
       { !isLoggedIn && <Auth /> }
       { isLoggedIn && <Layout /> }
     </div>
