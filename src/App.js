@@ -5,7 +5,7 @@ import "./App.css";
 import Auth from "./components/Auth";
 import Layout from "./components/Layout";
 import Notification from "./components/Notification";
-import { sendCartData } from "./store/cart-slice";
+import { fetchData, sendCartData } from "./store/cart-actions";
 let isFirstRender = true;
 
 
@@ -24,25 +24,21 @@ function App() {
   // console.log("Cart List", cartItems)
 
 
-  // using fetch
-  // useEffect(() => {
-  //   fetch('https://redux-http-38b3d-default-rtdb.firebaseio.com/cartItems.json', {
-  //     method: 'PUT',
-  //     body: JSON.stringify(cart)
-  //   })
-  // },[cart])
-
-
-  // using axios
+  // fetch Data useEffect
   useEffect(() => {
+    dispatch(fetchData())
+  }, [dispatch])
 
+
+  // sendData useEffect 
+  useEffect(() => {
     if(isFirstRender) {
       isFirstRender = false;
       return;
     }
-
-    dispatch(sendCartData(cart));
-    
+    if(cart.changed) {
+      dispatch(sendCartData(cart)); 
+    }
   }, [cart, dispatch])
 
 
