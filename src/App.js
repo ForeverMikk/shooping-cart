@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from 'axios';
 
 import "./App.css";
 import Auth from "./components/Auth";
 import Layout from "./components/Layout";
 import Notification from "./components/Notification";
-import { uiActions } from "./store/ui-slice";
+import { sendCartData } from "./store/cart-slice";
 let isFirstRender = true;
 
 
@@ -42,44 +41,9 @@ function App() {
       return;
     }
 
-
-    // Send state as a request
-    async function sendRequest(){
-      
-      dispatch(uiActions.showNotification({
-        open: true,
-        type: 'warning',
-        message: 'Sending Request'
-      }))
-      
-      try {
-        const response = await axios.put('https://redux-http-38b3d-default-rtdb.firebaseio.com/cartItems.json',
-          JSON.stringify(cart)
-        )
-
-        const data = await response.data;
-        console.log("DATA", data)
-
-        dispatch(uiActions.showNotification({
-          open: true,
-          type: 'success',
-          message: "Sent Request to database Successfully"
-        }))
-
-      } catch(error) {
-
-        dispatch(uiActions.showNotification({
-          open:'true',
-          type: 'error',
-          message: "Sending Request Failed"
-        }))
-
-        console.log(error)
-      }
-    }
-
-    sendRequest()
-  }, [cart])
+    dispatch(sendCartData(cart));
+    
+  }, [cart, dispatch])
 
 
 
